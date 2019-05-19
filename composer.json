@@ -1,0 +1,14 @@
+{
+    "name": "maaanandsheela/beeg-stremio-addon",
+    "description": "Beeg.com addon for stremio.",
+    "type": "project",
+    "require": {
+        "phpfastcache/phpfastcache": "^7.0"
+    },
+    "authors": [
+        {
+            "name": "Maa Anand Sheela",
+            "email": "maaanandsheela@protonmail.com"
+        }
+    ]
+}
