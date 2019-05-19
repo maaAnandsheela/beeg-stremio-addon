@@ -54,6 +54,7 @@ Preffered host [Infinityfree](https://infinityfree.net/) as it supports clouflar
 ## Known Issues
 
 - Video Streams won't work on browser version of stremio due to beeg.com preventing forgery of videos due to referrer header.
+- Include vendor folder due to docker issues doesn't require composer install.
 
 ## Screenshots
 
