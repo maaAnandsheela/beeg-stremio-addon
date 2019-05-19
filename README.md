@@ -58,8 +58,8 @@ Preffered host [Infinityfree](https://infinityfree.net/) as it supports clouflar
 
 ## Screenshots
 
-![Screenshot](/captures/screenshot1.jpg)
+![Screenshot](/captures/screenshot1.png)
 
-![Screenshot](/captures/screenshot2.jpg)
+![Screenshot](/captures/screenshot2.png)
 
-![Screenshot](/captures/screenshot3.jpg)
+![Screenshot](/captures/screenshot3.png)
