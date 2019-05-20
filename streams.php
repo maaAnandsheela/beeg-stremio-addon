@@ -7,7 +7,10 @@ $catalog = getRequestParams();
 setHeaders();
 
 $get_id = explode(":",$catalog->id);
-$fin = beeg_get_info_id($get_id['1']);
-echo json_encode(generate_stream($fin),JSON_UNESCAPED_SLASHES);
-
+if ($get_id['0'] == "beeg") {
+    $fin = beeg_get_info_id($get_id['1']);
+    echo json_encode(generate_stream($fin),JSON_UNESCAPED_SLASHES);
+}
+else
+	echo "null";
 ?>

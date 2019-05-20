@@ -20,12 +20,14 @@ $manifest->types = array("movie");
 $catalog[0]['type'] = "movie";
 $catalog[0]['name'] = "Beeg:Home";
 $catalog[0]['id'] = "beeg_addon_home";
+$catalog[0]['idPrefixes'] = array("beeg");
 $catalog[0]['extraSupported'] = array("search","genre","skip");
 $i=1;
 foreach ($tags_catalog as $t) {
 	$catalog[$i]['type'] = "movie";
 	$catalog[$i]['name'] = "Beeg:{$t}";
 	$catalog[$i]['id'] = "beeg_addon_{$t}";
+	$catalog[$i]['idPrefixes'] = array("beeg");
 	$catalog[$i]['extraSupported'] = array("skip");
 	$i++;
 }

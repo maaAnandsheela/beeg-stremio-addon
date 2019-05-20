@@ -6,6 +6,7 @@ include 'beeg.php';
 $catalog = getRequestParams();
 setHeaders();
 $get_id = explode(":",$catalog->id);
+if ($get_id['0'] == "beeg") {
   $cache_key = "meta_{$get_id['1']}";
   $cache = cache_check($cache_key);
   if ($cache['status']) {
@@ -19,6 +20,8 @@ $get_id = explode(":",$catalog->id);
 	cache_create($cache_key,$data,cache_meta_ttl);
 	echo $data;
   }
-
+}
+else
+	echo "null";
 
 ?>
