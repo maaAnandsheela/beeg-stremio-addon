@@ -191,3 +191,13 @@ function img_to_base64($id) {
    }
    return $f;
 }
+
+function beeg_get_tags() {
+	$data = file_get_contents(beeg_base_url."api/v6/".beeg_version."/index/main/0/pc");
+	$data = json_decode($data,true);	
+	
+    foreach ($data['tags'] as $t) {
+          $ta[] = $t['tag'];
+    }	
+	return $ta;
+}

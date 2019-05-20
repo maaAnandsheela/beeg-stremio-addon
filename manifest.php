@@ -1,7 +1,7 @@
 <?php
 //includes
-include 'helpers.php';
 include 'config.php';
+include 'beeg.php';
 
 // enable CORS and set JSON Content-Type
 setHeaders();
@@ -22,6 +22,7 @@ $catalog[0]['type'] = "movie";
 $catalog[0]['name'] = "Beeg:Home";
 $catalog[0]['id'] = "beeg_addon_home";
 $catalog[0]['extraSupported'] = array("search","genre","skip");
+$catalog[0]['genres'] = beeg_get_tags();
 
 $i=1;
 foreach ($tags_catalog as $t) {
