@@ -30,8 +30,12 @@ function beeg_get_feed($tag) {
 	$data = json_decode($data,true);	
 	
 	$i = 0;
-	
-	for ($i =0; $i < 65;$i++) {
+	$size = sizeof($data['videos']) ;
+	if ($size > 65) 
+		$f =65;
+	else
+		$f = $size -1;
+	for ($i =0; $i < $f;$i++) {
 		//id
 		$final[$i]['id'] = "beeg:{$data['videos'][$i]['id']}";
 		

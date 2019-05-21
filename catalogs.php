@@ -8,6 +8,7 @@ setHeaders();
 if (empty($catalog->extra)) {	
    $get_id = explode("_",$catalog->id);
    $get_id['2'] = strtolower($get_id['2']);
+   $get_id['2'] = urlencode($get_id['2']);
   if ($get_id['2'] == "home") {
 	  echo json_encode(beeg_get_feed_home());
   }
@@ -37,8 +38,9 @@ else {
         }		
 	}
 	elseif ($catalog->extra->genre) {
-		$tag = str_replace(" ","-",$catalog->extra->genre);	
+		$tag = $catalog->extra->genre;	
 		$tag = strtolower($tag);
+		$tag = urlencode($tag);
         $cache = cache_check($tag);
         if ($cache['status']) {
 	      echo $cache['data'];
