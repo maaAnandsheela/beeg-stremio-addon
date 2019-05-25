@@ -37,7 +37,7 @@ else {
 	      echo $data;
         }		
 	}
-	elseif ($catalog->extra->genre) {
+	elseif ($catalog->extra->genre && !$catalog->extra->skip) {
 		$tag = $catalog->extra->genre;	
 		$tag = strtolower($tag);
 		$tag = urlencode($tag);
@@ -64,11 +64,25 @@ else {
            }
            else {
              $data = json_encode(beeg_skip_feed($catalog->extra->skip,$get_id['2']));
-	         cache_create($get_id['2'],$data,cache_catalog_ttl);
+	         cache_create("{$catalog->extra->skip}-{$get_id['2']}",$data,cache_catalog_ttl);
 	         echo $data;
 		   }
         }		
 	}
+	elseif ($catalog->extra->skip && $catalog->extra->genre) {
+		$tag = $catalog->extra->genre;	
+		$tag = strtolower($tag);
+		$tag = urlencode($tag);
+        $cache = cache_check("{$catalog->extra->skip}-{$catalog->extra->genre}");
+        if ($cache['status']) {
+	        echo $cache['data'];
+        }
+        else {
+             $data = json_encode(beeg_skip_feed($catalog->extra->skip,$tag));
+	         cache_create("{$catalog->extra->skip}-{$catalog->extra->genre}",$data,cache_catalog_ttl);
+	         echo $data;
+		}		
+	}	
 	else {
 		echo "null";
 	}
