@@ -51,7 +51,7 @@ else {
 	      echo $data;
         }
 	}
-	elseif ($catalog->extra->skip) {
+	elseif ($catalog->extra->skip && !$catalog->extra->genre) {
 		$get_id = explode("_",$catalog->id);
         $get_id['2'] = strtolower($get_id['2']);
         if ($get_id['2'] == "home") {
