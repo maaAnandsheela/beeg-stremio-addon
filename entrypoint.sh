@@ -1,5 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
-source /etc/apache2/envvars
-#tail -F /var/log/apache2/* &
-exec apache2 -D FOREGROUND
+ln -sf /dev/stdout /var/log/apache2/access.log && \
+ln -sf /dev/stderr /var/log/apache2/error.log
+
+mkdir -p /run/apache2 && \
+  /usr/sbin/httpd -D FOREGROUND
+
+exit "$@"

@@ -1,52 +1,24 @@
-FROM ubuntu:bionic
-MAINTAINER romeOz <serggalka@gmail.com>
+FROM alpine:3.8
 
-ENV OS_LOCALE="en_US.UTF-8"
-RUN apt-get update && apt-get install -y locales && locale-gen ${OS_LOCALE}
-ENV LANG=${OS_LOCALE} \
-    LANGUAGE=${OS_LOCALE} \
-    LC_ALL=${OS_LOCALE} \
-    DEBIAN_FRONTEND=noninteractive
+MAINTAINER maaanandsheela@protonmail.com
 
-ENV APACHE_CONF_DIR=/etc/apache2 \
-    PHP_CONF_DIR=/etc/php/7.3 \
-    PHP_DATA_DIR=/var/lib/php
+COPY ./ /var/www/html/
+COPY entrypoint.sh /opt/entrypoint.sh
 
-COPY ./ /var/www/app/
-COPY entrypoint.sh /sbin/entrypoint.sh
+RUN apk --update add \
+    curl php-apache2 php-cli php-json php-mbstring php-phar php-openssl && \
+    rm -f /var/cache/apk/* && \
+    chmod +x /opt/entrypoint.sh && \
+    curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin --filename=composer && \
+    mkdir -p /var/www/html/ && chown -R apache:apache /var/www/html
 
-RUN	\
-	BUILD_DEPS='software-properties-common' \
-    && dpkg-reconfigure locales \
-	&& apt-get install --no-install-recommends -y $BUILD_DEPS \
-	&& add-apt-repository -y ppa:ondrej/php \
-	&& add-apt-repository -y ppa:ondrej/apache2 \
-	&& apt-get update \
-    && apt-get install -y curl apache2 libapache2-mod-php7.3 php7.3-cli php7.3-readline php7.3-mbstring php7.3-zip php7.3-intl php7.3-xml php7.3-json php7.3-curl php7.3-gd php7.3-pgsql php7.3-mysql php-pear \
-    # Apache settings
-    && cp /dev/null ${APACHE_CONF_DIR}/conf-available/other-vhosts-access-log.conf \
-    && rm ${APACHE_CONF_DIR}/sites-enabled/000-default.conf ${APACHE_CONF_DIR}/sites-available/000-default.conf \
-    && a2enmod rewrite php7.3 \
-	# Install composer
-	&& curl -sS https://getcomposer.org/installer | php -- --version=1.8.4 --install-dir=/usr/local/bin --filename=composer \
-	# Cleaning
-	&& apt-get purge -y --auto-remove $BUILD_DEPS \
-	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* \
-	# Forward request and error logs to docker log collector
-	&& ln -sf /dev/stdout /var/log/apache2/access.log \
-	&& ln -sf /dev/stderr /var/log/apache2/error.log \
-	&& chmod 755 /sbin/entrypoint.sh \
-	&& chown www-data:www-data ${PHP_DATA_DIR} -Rf
+COPY configs/httpd.conf /etc/apache2/httpd.conf
+COPY configs/app.conf /etc/apache2/sites/
+COPY configs/php.ini /etc/php7/php.ini
 
-RUN chown -R www-data:www-data /var/www/app/
-COPY ./configs/apache2.conf ${APACHE_CONF_DIR}/apache2.conf
-COPY ./configs/app.conf ${APACHE_CONF_DIR}/sites-enabled/app.conf
-COPY ./configs/php.ini  ${PHP_CONF_DIR}/apache2/conf.d/custom.ini
+EXPOSE 80
 
-WORKDIR /var/www/app/
+WORKDIR /var/www/html/
 
-EXPOSE 80 443
-
-# By default, simply start apache.
-CMD ["/sbin/entrypoint.sh"]
+ENTRYPOINT [ "/opt/entrypoint.sh" ]
