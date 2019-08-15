@@ -12,10 +12,10 @@ function beeg_get_feed_home() {
 
 	for ($i =0; $i < 65;$i++) {
 		//id
-		$final[$i]['id'] = "beeg:{$data['videos'][$i]['id']}";
+		$final[$i]['id'] = "beeg:{$data['videos'][$i]['svid']}";
 		
 		//images
-	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['id']);
+	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['svid'],$data['videos'][$i]['thumbs']['0']['image']);
 
 		//name
 		$final[$i]['name'] = $data['videos'][$i]['title'];
@@ -37,10 +37,10 @@ function beeg_get_feed($tag) {
 		$f = $size -1;
 	for ($i =0; $i < $f;$i++) {
 		//id
-		$final[$i]['id'] = "beeg:{$data['videos'][$i]['id']}";
+		$final[$i]['id'] = "beeg:{$data['videos'][$i]['svid']}";
 		
 		//images
-	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['id']);
+	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['svid'],$data['videos'][$i]['thumbs']['0']['image']);
 
 		//name
 		$final[$i]['name'] = $data['videos'][$i]['title'];
@@ -51,7 +51,7 @@ function beeg_get_feed($tag) {
 }
 
 function beeg_get_info_id($id) {
-	$data = file_get_contents(beeg_base_url."api/v6/".beeg_version."/video/{$id}");
+	$data = file_get_contents(beeg_base_url."api/v6/".beeg_version."/video/{$id}?v=2");
 	$data = json_decode($data,true);
 	
 	//vid_links
@@ -62,14 +62,9 @@ function beeg_get_info_id($id) {
 	$final['vid_720']  = str_replace("{DATA_MARKERS}","data=pc_XX__".beeg_version."_0",$data['720p']);
 	$final['vid_720'] = "https:{$final['vid_720']}";
 	
-	//genres
-	foreach ($data['master_tags'] as $g) {
-		$final['genre'][] = $g['tag'];
-	}
-	
 	//images only one size to reduce bandwidth on server because they will be served in base64. Due to referrer problem in beeg.com
-	$final['img'] = img_to_base64($id);
-	$final['poster'] = img_to_base64($id);
+	$final['img'] = img_to_base64($id,NULL);
+	$final['poster'] = img_to_base64($id,NULL);
 	
 	//title and description
 	$final['name'] = $data['title'];
@@ -96,10 +91,10 @@ function beeg_search_results_parse($type,$query) {
 	
 	foreach ($data['videos'] as $d) {
 		//id
-		$final[$i]['id'] = "beeg:{$d['id']}";
+		$final[$i]['id'] = "beeg:{$d['svid']}";
 		
 		//images
-	    $final[$i]['poster'] = img_to_base64($d['id']);
+	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['svid'],$data['videos'][$i]['thumbs']['0']['image']);
 		
 		//name
 		$final[$i]['name'] = $d['title'];
@@ -137,10 +132,10 @@ function beeg_skip_feed($quant,$tag) {
 	
 	for ($i =$quant; $i < $f;$i++) {
 		//id
-		$final[$i]['id'] = "beeg:{$data['videos'][$i]['id']}";
+		$final[$i]['id'] = "beeg:{$data['videos'][$i]['svid']}";
 		
 		//images
-	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['id']);
+	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['svid'],$data['videos'][$i]['thumbs']['0']['image']);
 
 		//name
 		$final[$i]['name'] = $data['videos'][$i]['title'];
@@ -164,10 +159,10 @@ function beeg_skip_feed_home($quant) {
 	
 	for ($i =$quant; $i < $f;$i++) {
 		//id
-		$final[$i]['id'] = "beeg:{$data['videos'][$i]['id']}";
+		$final[$i]['id'] = "beeg:{$data['videos'][$i]['svid']}";
 		
 		//images
-	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['id']);
+	    $final[$i]['poster'] = img_to_base64($data['videos'][$i]['svid'],$data['videos'][$i]['thumbs']['0']['image']);
 
 		//name
 		$final[$i]['name'] = $data['videos'][$i]['title'];
@@ -181,14 +176,14 @@ function beeg_skip_feed_home($quant) {
 	return $metas;	
 }
 
-function img_to_base64($id) {
+function img_to_base64($id,$image) {
    $key = "img-{$id}";
    $cache = cache_check($key);
    if ($cache['status']) {
 	$f = $cache['data'];
    }
    else {
-    $data = file_get_contents("https://img.beeg.com/264x198/{$id}.jpg");
+    $data = file_get_contents("https://img.beeg.com/264x198/{$image}");
     $data = base64_encode($data);
     $f = "data:image/jpeg;base64,{$data}";
 	cache_create($key,$f,cache_catalog_ttl);
