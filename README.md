@@ -5,7 +5,7 @@ This is a [Stremio](https://www.stremio.com/) add-on for , [beeg.](https://beeg.
 
 It is a php and apache app and can be run on major free hosting service.
 
-Demo : https://stremio.eu-gb.mybluemix.net/manifest.json
+Demo : https://stremio-beeg-t.now.sh/manifest.json
 
 ## Features
 
